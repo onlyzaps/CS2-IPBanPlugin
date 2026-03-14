@@ -84,14 +84,13 @@ jobs:
           dotnet-version: '8.0.x'
       
       - name: Restore dependencies
-        # Adjust the path here if your .csproj is in the root directory instead of an IPBanPlugin folder
-        run: dotnet restore IPBanPlugin/IPBanPlugin.csproj
+        run: dotnet restore IPBanPlugin.csproj
       
       - name: Build project
-        run: dotnet build IPBanPlugin/IPBanPlugin.csproj --configuration Release --no-restore
+        run: dotnet build IPBanPlugin.csproj --configuration Release --no-restore
       
       - name: Publish project
-        run: dotnet publish IPBanPlugin/IPBanPlugin.csproj --configuration Release --no-build --output ./publish
+        run: dotnet publish IPBanPlugin.csproj --configuration Release --no-build --output ./publish
       
       - name: Create release package
         run: |
