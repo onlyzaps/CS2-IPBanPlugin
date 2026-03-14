@@ -84,6 +84,7 @@ jobs:
           dotnet-version: '8.0.x'
       
       - name: Restore dependencies
+        # Adjust the path here if your .csproj is in the root directory instead of an IPBanPlugin folder
         run: dotnet restore IPBanPlugin/IPBanPlugin.csproj
       
       - name: Build project
@@ -94,6 +95,7 @@ jobs:
       
       - name: Create release package
         run: |
+          # CounterStrikeSharp requires the folder to match the DLL name
           mkdir -p release/addons/counterstrikesharp/plugins/IPBanPlugin
           cp publish/IPBanPlugin.dll release/addons/counterstrikesharp/plugins/IPBanPlugin/
           cp publish/IPBanPlugin.pdb release/addons/counterstrikesharp/plugins/IPBanPlugin/
@@ -103,9 +105,9 @@ jobs:
         run: |
           # Determine the zip name based on context
           if [ "${{ needs.tag.result }}" = "success" ]; then
-            ZIP_NAME="IPBanPlugin-${{ needs.tag.outputs.new_tag }}.zip"
+            ZIP_NAME="CS2-Player-IP-Suite-${{ needs.tag.outputs.new_tag }}.zip"
           else
-            ZIP_NAME="IPBanPlugin-build-${{ github.sha }}.zip"
+            ZIP_NAME="CS2-Player-IP-Suite-build-${{ github.sha }}.zip"
           fi
           cd release && zip -r "../${ZIP_NAME}" . && cd ..
           echo "ZIP_NAME=${ZIP_NAME}" >> $GITHUB_ENV
@@ -113,7 +115,7 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v5
         with:
-          name: IPBanPlugin-build
+          name: CS2-Player-IP-Suite-build
           path: ${{ env.ZIP_NAME }}
           retention-days: 7
   
@@ -129,19 +131,19 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v5
         with:
-          name: IPBanPlugin-build
+          name: CS2-Player-IP-Suite-build
       
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.tag.outputs.new_tag }}
           files: |
-            IPBanPlugin-*.zip
+            CS2-Player-IP-Suite-*.zip
           body: |
-            ## IPBanPlugin ${{ needs.tag.outputs.new_tag }}
+            ## CS2-Player-IP-Suite ${{ needs.tag.outputs.new_tag }}
             
             ### Installation
-            1. Download `IPBanPlugin-${{ needs.tag.outputs.new_tag }}.zip`
+            1. Download `CS2-Player-IP-Suite-${{ needs.tag.outputs.new_tag }}.zip`
             2. Extract the contents to your Counter-Strike 2 server directory
             3. The plugin will be installed at `addons/counterstrikesharp/plugins/IPBanPlugin/`
             4. Make sure to generate or copy your `.json` configuration file appropriately.
